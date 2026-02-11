@@ -20,7 +20,7 @@ class Juego(arcade.Window):
     
     def setup(self):
         #aqui lo que hacemos es carfar el mapa arcade ya reconoce el formato .tmx
-        self.tile_map = arcade.load_tilemap("assets/nivel_1.tmx", scaling=1)
+        self.tile_map = arcade.load_tilemap("assets/n22/mapa_final.tmx", scaling=1)
 
         #y aqui creamos una esena para cargar todas la capas de nuestro nivel 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -29,8 +29,8 @@ class Juego(arcade.Window):
         self.caballero = Jugador()
 
         #definimos las coordenadas donde aparecera el personaje esto de acuerdo con el mapa
-        self.caballero.center_x = 64
-        self.caballero.center_y = 96
+        self.caballero.center_x = 80
+        self.caballero.center_y = 300
 
         #aja aqui lo que hacemos es que como ya nuestro juegador es un objeto lo colocamos en la esena que ya habiamos predefinido para el mapa
         self.scene.add_sprite("jugador", self.caballero)

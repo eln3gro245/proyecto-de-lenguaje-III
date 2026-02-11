@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="40" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="1">
+ <tileset firstgid="1" source="Inside A1.tsx"/>
+ <tileset firstgid="49" source="Inside A2.tsx"/>
+ <tileset firstgid="97" source="tile_set_castle.tsx"/>
+ <tileset firstgid="241" source="LavaDungeonTileset.tsx"/>
+ <tileset firstgid="529" source="tileset.tsx"/>
+ <tileset firstgid="549" source="Outside A3.tsx"/>
+ <layer id="1" name="Capa de patrones 1" width="50" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztkVEKgzAQBdfr9Sr1EjlIj2D1iLUQUFIbCGIdy3w8ktlNYIdNETHMGeeknOcFOemBYj1YrAeL9WCxHizWg8V6sFgPFuvBYj1YrAeL9WCxHizWg8V6sPhfPB4NIc29tY+U61PeTe1f30Xcu+Us72W2et/el/Xau/c8t1VaPVrmPTJ7PKaKx6+jx2f/bNaD6/EC9rGQAA==
+  </data>
+ </layer>
+ <layer id="3" name="obj" width="50" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztlcENg1AMQ39Yga7XXRilLEU7AtANWpDgH1BTqbcmIZb8pEi2D+T7QkohhBASyaX51sie5KGXj74Jrh+kdEe+a3P/UHt/eat9o8p3be5n9W6P74/swR6OPRa15yW4vlX3sGpkT/KQ5R7/6+8qrxrVTyqvGtW/VV41sifEmkz3mPfchqvzRHU4/uNe490lokNUF1SekmMsWOW88QT13VFdCDmbDUZCsjg=
+  </data>
+ </layer>
+ <layer id="2" name="piso" width="50" height="40">
+  <data encoding="base64" compression="zlib">
+   eJzt0sEJgDAQRNHFgjxZghfTQNqxFEvVgEJUxGjczRjmw5zdR/Qik69jv28xjHTgRAdWdGBFB1Z0YEUHVnRgRQdWdGBFB1Z0YEUHVnRgRce+XnkWjvCdttHdnSXXYWFIsQTHl+9rXXzbkDgnWJZwi1sXeuLYLF3BxW+Q43By/t+s7o5vj/fWcZyW5epuTYfWLB2lV5NjBgmtuwk=
+  </data>
+ </layer>
+</map>
