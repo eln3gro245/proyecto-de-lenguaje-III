@@ -42,7 +42,7 @@ class Juego(arcade.Window):
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.caballero, platforms=self.scene["piso"], gravity_constant=gravedad)
 
         #aqui mediante la variable que definimos en el construtor podemos hacer zoom para que no se muestre todo el mapa
-        self.camara.zoom = 1.0
+        self.camara.zoom = 2.0
 
     def on_draw(self):
         #para limpiar pantalla
@@ -54,8 +54,6 @@ class Juego(arcade.Window):
             self.scene.draw()
 
     def on_update(self, delta_time):
-        
-
         self.caballero.update_animation(delta_time)
         
         self.camara.position = (self.caballero.center_x, self.caballero.center_y)
@@ -70,12 +68,13 @@ class Juego(arcade.Window):
         elif key == arcade.key.W or key == arcade.key.SPACE:
             if self.physics_engine.can_jump():
                 self.caballero.change_y = self.caballero.jump
+        elif key == arcade.key.ENTER:
+            self.caballero.ataque()
+        
 
     def on_key_release(self, key, modifiers):
         if key in (arcade.key.A, arcade.key.LEFT, arcade.key.D, arcade.key.RIGHT):
             self.caballero.change_x = 0
-        
-
         
 def main():
     window = Juego()

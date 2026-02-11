@@ -6,11 +6,31 @@ class Entities(arcade.Sprite):
         super().__init__(scaling=escala)
         #aqui definimos los atributos
         self.estado_actual = "quieto"
+        self.tipo_ataque = ""
         self.hp = hp
         self.speed = speed
         self.jump = jump
         self.force = force
         self.is_climbing = False
+        self.atacar = False
+
+        #estas son variable que definimos para a la hora de hacer la animaciones tengamos contadores para los frames
+        #que tiempo de animacion es mas que todo para calcular el tiempo de ejecucion y las de los frames los cambia para dar la sensacion de movimiento
+        self.frame_actual = 0
+        self.tiempo_animacion = 0
+
+    def ataque(self):
+        if not self.atacar:
+            self.atacar = True
+            self.frame_actual = 0
+
+        if self.change_x == 0:
+            self.tipo_ataque = "ataque"
+            self.frame_actual = 0
+        elif self.change_x > 0:
+            self.tipo_ataque = "ataque_movimiento"
+            self.frame_actual = 0
+
 
     #hacemos un metodo para carga las animaciones que dispone nuestro png
     def cargar_hoja(self, archivo, frames):
@@ -21,7 +41,9 @@ class Entities(arcade.Sprite):
         #por que se hace de esta manera por el png que estamos usando tiene varios frames donde el personaje con ayuda del motor va a poder moverse 
         #por eso columns y count nosotros le pasamos los frame que tiene cada png por que no todos los png tinen los mismo frames y lo que hace
         #es que realiza un corte gracias al size para dividirlo la imagen para luego poder hacer la carga de las imagen una por una
-        return sheet.get_texture_grid(size=(120,80), columns=frames, count=frames, )
+        return sheet.get_texture_grid(size=(120,80), columns=frames, count=frames)
+    
+    
 
 class Jugador(Entities):
     def __init__(self):
@@ -33,9 +55,12 @@ class Jugador(Entities):
         #hacemos un diccionario para almacenar la ruta de los archivos que usaremos para animar nuestro personje
         self.animaciones = {
             "quieto": self.cargar_hoja(f"{ruta}_Idle.png", 10),
+            "giro": self.cargar_hoja(f"{ruta}_TurnAround.png", 3),
             "caminar": self.cargar_hoja(f"{ruta}_Run.png", 10),
-            "ataque": self.cargar_hoja(f"{ruta}_Attack.png", 4),
+            "ataque": self.cargar_hoja(f"{ruta}_AttackNoMovement.png", 4),
+            "ataque_movimiento": self.cargar_hoja(f"{ruta}_Attack.png", 4),
             "salto":  self.cargar_hoja(f"{ruta}_Jump.png", 3),
+            "caida": self.cargar_hoja(f"{ruta}_Fall.png", 3),
             "morir":  self.cargar_hoja(f"{ruta}_Death.png", 10)
         }
         
@@ -45,31 +70,52 @@ class Jugador(Entities):
         #aqui lo que hacemos es que le definimos las imagen de quieto para predeterminadamente para que aparezca el personaje sin movimientos
         self.texture = self.animaciones["quieto"][0]
 
-        self.frame_actual = 0
-        self.tiempo_animacion = 0
-
     def update_animation(self, delta_time = 1 / 60):
+
         #como nuestro png no tiene una animacion para ir a la izquierda lo que hago es que la atributo scale que es de arcade lo volteo 
         #de forma de espejo para hacer que se cea como el personaje se mueva a la izquierda
         if self.change_x > 0:
             self.width = abs(self.width)
         elif self.change_x < 0:
             self.width = -abs(self.width)
-        
-        estado = "caminar" if self.change_x != 0 else "quieto"
 
-        if self.estado_actual != estado:
-            self.estado_actual = estado
+        if self.atacar:
+            self.estado = self.tipo_ataque
+        elif self.change_y != 0:
+            self.estado = "salto"
+            if self.change_y < 0:
+                self.estado = "caida"
+        elif self.change_x != 0:
+            self.estado = "caminar"
+        elif self.change_x == 0:
+            self.estado = "quieto"
+        
+
+        #aqui lo que hace es cambiar la varianle del constructor por que la viarible que definimos para hacer el cambio de los estados de movimiento
+        if self.estado_actual != self.estado:
+            self.estado_actual = self.estado
             self.frame_actual = 0
             self.tiempo_animacion = 0
 
+        #aqui calculamos el tiempo en el que ocurren eso cambios de frames de acuerdo a los fps que en este caso solo usaremos 60
         self.tiempo_animacion += delta_time
+        if self.atacar:
+            if self.tiempo_animacion > 0.5:
+                self.tiempo_animacion = 0
+                self.frame_actual += 1
+
         if self.tiempo_animacion > 0.1:
             self.tiempo_animacion = 0
             self.frame_actual += 1
 
+            #y aqui hacemos el llamado del estado al que queremos cambiar de acuerdo a los valores que tengamos en el diccionario
             if self.frame_actual >= len(self.animaciones[self.estado_actual]):
                 self.frame_actual = 0
 
+            #y aqui hace el cambio de estado
             self.texture = self.animaciones[self.estado_actual][self.frame_actual]
+            if self.atacar:
+                self.atacar = False
+                self.frame_actual = 0
+            
             
