@@ -4,14 +4,14 @@ from entities import Jugador
 
 #definimos el ancho y alto de la ventana donde se mostrara el juego
 WIDTH = 1600
-HEINGT = 1280
+HEIGHT = 1280
 TITULO = "soulslike"
 
 #esta va hacer la clase donde ejecutaros todo nuestro codigo
 #arcade.window es una clase predefinida por arcade de donde nosotros podemos hacer el juego 
 class Juego(arcade.Window):
     def __init__(self):
-        super().__init__(WIDTH, HEINGT, TITULO)
+        super().__init__(WIDTH, HEIGHT, TITULO)
         self.camara = arcade.Camera2D()
         self.tile_map =  None
         self.scene = None
@@ -21,6 +21,15 @@ class Juego(arcade.Window):
     def setup(self):
         #aqui lo que hacemos es carfar el mapa arcade ya reconoce el formato .tmx
         self.tile_map = arcade.load_tilemap("assets/n22/mapa_final.tmx", scaling=1)
+
+        #El Cálculo de las Dimensiones del Mapa
+        #En el código original, cargabamos el mapa pero el programa no "sabía" qué tan grande era en píxeles.con este bloque de codigo obtenemos las dimensiones del mapa. Es decir
+        # tile_map.width es la cantidad de cuadros (tiles)
+        # tile_map.tile_width es el tamaño de cada cuadro en píxeles
+        
+        self.map_width = self.tile_map.width * self.tile_map.tile_width
+        
+        self.map_height = self.tile_map.height * self.tile_map.tile_height
 
         #y aqui creamos una esena para cargar todas la capas de nuestro nivel 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -54,11 +63,27 @@ class Juego(arcade.Window):
             self.scene.draw()
 
     def on_update(self, delta_time):
-        self.caballero.update_animation(delta_time)
         
-        self.camara.position = (self.caballero.center_x, self.caballero.center_y)
+        self.caballero.update_animation(delta_time)
 
         self.physics_engine.update()
+        
+        # 1. Definir hacia dónde queremos que vaya la cámara (el jugador)
+        target_x = self.caballero.center_x
+        target_y = self.caballero.center_y
+
+        # 2. (Opcional) Limitar para que la cámara no se salga de los bordes del mapa
+        # Nota: Dividimos el ancho/alto de la ventana por el zoom para saber qué ve el jugador
+        view_width = self.width / self.camara.zoom
+        view_height = self.height / self.camara.zoom
+
+        # Clamp asegura que el valor esté entre el mínimo (0 + mitad de vista) 
+        # y el máximo (ancho del mapa - mitad de vista)
+        final_x = arcade.math.clamp(target_x, view_width / 2, self.map_width - view_width / 2)
+        final_y = arcade.math.clamp(target_y, view_height / 2, self.map_height - view_height / 2)
+
+        # 3. Aplicar la posición
+        self.camara.position = (final_x, final_y)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.A or key == arcade.key.LEFT:
