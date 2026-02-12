@@ -72,7 +72,7 @@ class Juego(arcade.Window):
         target_x = self.caballero.center_x
         target_y = self.caballero.center_y
 
-        # 2. (Opcional) Limitar para que la cámara no se salga de los bordes del mapa
+        # 2. Limitar para que la cámara no se salga de los bordes del mapa
         # Nota: Dividimos el ancho/alto de la ventana por el zoom para saber qué ve el jugador
         view_width = self.width / self.camara.zoom
         view_height = self.height / self.camara.zoom
