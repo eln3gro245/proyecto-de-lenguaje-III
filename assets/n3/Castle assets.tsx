@@ -26,17 +26,17 @@
    <object id="1" type="platfo" x="0" y="15.2238" width="20" height="2.77618"/>
   </objectgroup>
  </tile>
- <tile id="85">
+ <tile id="85" type="pincho">
   <objectgroup draworder="index" id="2">
    <object id="1" type="picho" x="9" y="9" width="23" height="23"/>
   </objectgroup>
  </tile>
- <tile id="86">
+ <tile id="86" type="pincho">
   <objectgroup draworder="index" id="2">
    <object id="1" type="picho" x="0" y="9" width="32" height="23"/>
   </objectgroup>
  </tile>
- <tile id="87">
+ <tile id="87" type="pincho">
   <objectgroup draworder="index" id="2">
    <object id="1" type="picho" x="0" y="9" width="23" height="23"/>
   </objectgroup>
@@ -61,12 +61,12 @@
    <object id="1" type="picho" x="9" y="0" width="23" height="14"/>
   </objectgroup>
  </tile>
- <tile id="106">
+ <tile id="106" type="pincho">
   <objectgroup draworder="index" id="2">
    <object id="1" type="pincho" x="0" y="0" width="32" height="14"/>
   </objectgroup>
  </tile>
- <tile id="107">
+ <tile id="107" type="pincho">
   <objectgroup draworder="index" id="2">
    <object id="1" type="pincho" x="0" y="0" width="23" height="14"/>
   </objectgroup>

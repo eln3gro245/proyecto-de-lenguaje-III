@@ -6,4 +6,14 @@
    <object id="1" type="plaataforma" x="0" y="0" width="32" height="32"/>
   </objectgroup>
  </tile>
+ <tile id="250">
+  <objectgroup draworder="index" id="2">
+   <object id="1" name="lava" type="lava" x="0" y="14" width="32" height="18"/>
+  </objectgroup>
+ </tile>
+ <tile id="268">
+  <objectgroup draworder="index" id="2">
+   <object id="1" name="lava" type="lava" x="0" y="0" width="32" height="32"/>
+  </objectgroup>
+ </tile>
 </tileset>

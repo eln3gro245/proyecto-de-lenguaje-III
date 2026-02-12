@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="40" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="40" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="1">
  <properties>
   <property name="musica_final" type="file" value="nivel_final.wav"/>
  </properties>
@@ -16,12 +16,17 @@
  </layer>
  <layer id="3" name="obj" width="50" height="40">
   <data encoding="base64" compression="zlib">
-   eJztlcENg1AMQ39Yga7XXRilLEU7AtANWpDgH1BTqbcmIZb8pEi2D+T7QkohhBASyaX51sie5KGXj74Jrh+kdEe+a3P/UHt/eat9o8p3be5n9W6P74/swR6OPRa15yW4vlX3sGpkT/KQ5R7/6+8qrxrVTyqvGtW/VV41sifEmkz3mPfchqvzRHU4/uNe490lokNUF1SekmMsWOW88QT13VFdCDmbDUZCsjg=
+   eJztlcENhDAMBBNaONqjF0rhmgJKAEqAexx5IIzEDzuKxYwUaccPkv3gEAAAICd1dc2eHcrhG8/cRb/ex9Ae8z2r+yjuvXOt+yYx37O6L+LdFt+f6EEPwx4/cc8a/fpH7MOUPTuUQyn7+KkPYp6yV5/FPGWvvol5yp4dQJuS9jH7XIfG+OTqcPzHrY51lxwdcnUBAIB38gfZt0h2
   </data>
  </layer>
  <layer id="2" name="piso" width="50" height="40">
   <data encoding="base64" compression="zlib">
-   eJzt0sEJgDAQRNHFgjxZghfTQNqxFEvVgEJUxGjczRjmw5zdR/Qik69jv28xjHTgRAdWdGBFB1Z0YEUHVnRgRQdWdGBFB1Z0YEUHVnRgRce+XnkWjvCdttHdnSXXYWFIsQTHl+9rXXzbkDgnWJZwi1sXeuLYLF3BxW+Q43By/t+s7o5vj/fWcZyW5epuTYfWLB2lV5NjBgmtuwk=
+   eJzt0sENgCAQRFFiQVbhxW2AdizFUnUTD0g0orjrSOYnc4YXiCHMsY39vtUw0YETHVjRgRUdWNGBFR1Y0YEVHVjRgRUdWNGBFR1Y0YEVHfsG43k49Jy+s92VpdbhYSixqOPN9/UuvdtYOAlYFr2LbNPuOBAs6RvUOCT4/rf8LDnYU0c+K8vZvS0dVvN0fL2WHAuYFKvN
+  </data>
+ </layer>
+ <layer id="4" name="lava" width="50" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztz8EJACAMBMGk/1KtQbAJTVRmYP93EQAAAAAAAPxg5B3tMLOvk17dXfUFui2LvGnD
   </data>
  </layer>
 </map>
