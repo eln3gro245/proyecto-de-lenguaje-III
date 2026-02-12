@@ -2,7 +2,7 @@ import arcade
 from arcade.hitbox import HitBox
 
 class Entities(arcade.Sprite):
-    def __init__(self, escala, hp, speed, jump, force, defense):
+    def __init__(self, escala, hp, speed, jump, force, defense, width, height):
         super().__init__(scaling=escala)
         #aqui definimos los atributos
         self.estado_actual = "quieto"
@@ -15,6 +15,10 @@ class Entities(arcade.Sprite):
         self.defense = defense
         self.is_climbing = False
         self.atacar = False
+
+        #definimos el alto y el ancho de nuestra entidad
+        self.width = width
+        self.height = height
 
         #estas son variable que definimos para a la hora de hacer la animaciones tengamos contadores para los frames
         #que tiempo de animacion es mas que todo para calcular el tiempo de ejecucion y las de los frames los cambia para dar la sensacion de movimiento
@@ -57,8 +61,11 @@ class Entities(arcade.Sprite):
                 enemigo.morir()
             
 
-    def morir():
-        pass
+    def morir(self):
+        if self.hp <= 0 and self.estado != "morir":
+            self.hp = 0
+            self.estado = "morir"
+            self.frame_actual = 0
 
 
     #hacemos un metodo para carga las animaciones que dispone nuestro png
@@ -70,9 +77,13 @@ class Entities(arcade.Sprite):
         #por que se hace de esta manera por el png que estamos usando tiene varios frames donde el personaje con ayuda del motor va a poder moverse 
         #por eso columns y count nosotros le pasamos los frame que tiene cada png por que no todos los png tinen los mismo frames y lo que hace
         #es que realiza un corte gracias al size para dividirlo la imagen para luego poder hacer la carga de las imagen una por una
-        return sheet.get_texture_grid(size=(120,80), columns=frames, count=frames)
+        return sheet.get_texture_grid(size=(self.width, self.height), columns=frames, count=frames)
     
     def update_animation(self, delta_time = 1 / 60):
+        animacion = self.animaciones.get(self.estado, self.animaciones.get("quieto"))
+
+        if self.frame_actual >= len(animacion):
+            self.frame_actual = 0
         #como nuestro png no tiene una animacion para ir a la izquierda lo que hago es que la atributo scale que es de arcade lo volteo 
         #de forma de espejo para hacer que se cea como el personaje se mueva a la izquierda
         if self.change_x > 0:
@@ -120,7 +131,7 @@ class Entities(arcade.Sprite):
 
 class Jugador(Entities):
     def __init__(self):
-        super().__init__(escala=1, hp=5, speed=5, jump=12, force=15, defense=15)
+        super().__init__(escala=1, hp=5, speed=5, jump=12, force=10, defense=15, width=120, height=80)
 
         #hago una variable para para buscar mas facil la ruta
         ruta = "assets/Colour1/NoOutline/120x80_PNGSheets/"
@@ -128,7 +139,7 @@ class Jugador(Entities):
         #hacemos un diccionario para almacenar la ruta de los archivos que usaremos para animar nuestro personje
         self.animaciones = {
             "quieto": self.cargar_hoja(f"{ruta}_Idle.png", 10),
-            "giro": self.cargar_hoja(f"{ruta}_TurnAround.png", 3), #posible implementacion de giro pero aun no de dado la logica para que se fluido el giro y siga caminando
+            "giro": self.cargar_hoja(f"{ruta}_TurnAround.png", 3), 
             "caminar": self.cargar_hoja(f"{ruta}_Run.png", 10),
             "ataque": self.cargar_hoja(f"{ruta}_AttackNoMovement.png", 4),
             "ataque_movimiento": self.cargar_hoja(f"{ruta}_Attack.png", 4),
@@ -159,6 +170,8 @@ class Slime(Entities):
             "saltar": self.cargar_hoja(Saltar),
             "quieto":self.cargar_hoja(Quieto)    
         }
+
+        self.hit_box = HitBox([(-15, -15), (15, -15), (15, 10), (-15, 10)])
 
         self.texture = self.animaciones["quieto"][0]
         
