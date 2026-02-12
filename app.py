@@ -21,16 +21,16 @@ class Juego(arcade.Window):
     def setup(self):
         import os  
         
-        map_path = "assets/n22/mapa_final.tmx"
+        map_path = "assets/n3/mapa_nivel_2.tmx"
         self.tile_map = arcade.load_tilemap(map_path, scaling=1)
 
         # Lógica de audio (DEBE tener la misma alineación que la línea de arriba)
-        bg_music_path = self.tile_map.properties.get("musica_final")
+        bg_music_path = self.tile_map.properties.get("musica_nivel2")
         
         if bg_music_path:
             # Estas líneas llevan 4 espacios extra a la derecha del 'if'
             sound_file = os.path.basename(str(bg_music_path))
-            asset_path = f"assets/n22/{sound_file}"
+            asset_path = f"assets/n3/{sound_file}"
             
             self.music = arcade.load_sound(asset_path)
             self.player = arcade.play_sound(self.music, volume=0.5, loop=True)
