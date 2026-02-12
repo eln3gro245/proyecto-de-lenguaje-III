@@ -143,3 +143,23 @@ class Jugador(Entities):
         #aqui lo que hacemos es que le definimos las imagen de quieto para predeterminadamente para que aparezca el personaje sin movimientos
         self.texture = self.animaciones["quieto"][0]        
             
+class Slime(Entities):
+    def _init_(self):
+        
+        super()._init_(escala=1, hp=12, speed=3, jump=8, force=16, defense=5)
+
+        ruta_slime = "assets/SlimeCharacter_nyknck/" 
+        
+        Caminar = [(f"({ruta_slime}walk01.png),({ruta_slime}walko2.png),({ruta_slime}walk03.png),({ruta_slime}walk04.png)")]
+        Saltar = [(f"({ruta_slime}Jump01.png),({ruta_slime}Jump02.png),({ruta_slime}Jump03.png),({ruta_slime}Jump04.png),({ruta_slime}Jump05.png),({ruta_slime}Jump06.png),({ruta_slime}Jump07.png),({ruta_slime}Jump08.png),({ruta_slime}Jump09.png)")]
+        Quieto = [(f"({ruta_slime}idle01.png),({ruta_slime}idle02.png)")]
+
+        self.animaciones = {
+            "caminar": self.cargar_hoja(Caminar),
+            "saltar": self.cargar_hoja(Saltar),
+            "quieto":self.cargar_hoja(Quieto)    
+        }
+
+        self.texture = self.animaciones["quieto"][0]
+        
+        self.hit_box = HitBox([(-15, -15), (15, -15), (15, 10), (-15, 10)])
