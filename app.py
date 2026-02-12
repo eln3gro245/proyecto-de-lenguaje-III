@@ -1,6 +1,6 @@
 #importamos la libreria de arcade
 import arcade
-from entities import Jugador 
+from entities import Jugador
 
 #definimos el ancho y alto de la ventana donde se mostrara el juego
 WIDTH = 1600
