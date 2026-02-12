@@ -17,8 +17,8 @@ class Entities(arcade.Sprite):
         self.atacar = False
 
         #definimos el alto y el ancho de nuestra entidad
-        self.width = width
-        self.height = height
+        self.ancho = width
+        self.alto = height
 
         #estas son variable que definimos para a la hora de hacer la animaciones tengamos contadores para los frames
         #que tiempo de animacion es mas que todo para calcular el tiempo de ejecucion y las de los frames los cambia para dar la sensacion de movimiento
@@ -77,12 +77,13 @@ class Entities(arcade.Sprite):
         #por que se hace de esta manera por el png que estamos usando tiene varios frames donde el personaje con ayuda del motor va a poder moverse 
         #por eso columns y count nosotros le pasamos los frame que tiene cada png por que no todos los png tinen los mismo frames y lo que hace
         #es que realiza un corte gracias al size para dividirlo la imagen para luego poder hacer la carga de las imagen una por una
-        return sheet.get_texture_grid(size=(self.width, self.height), columns=frames, count=frames)
+        return sheet.get_texture_grid(size=(self.ancho, self.alto), columns=frames, count=frames)
     
     def update_animation(self, delta_time = 1 / 60):
-        animacion = self.animaciones.get(self.estado, self.animaciones.get("quieto"))
+        animacion = self.animaciones.get(self.estado_actual)
 
-        if self.frame_actual >= len(animacion):
+        if not animacion:
+            animacion = self.animaciones.get("quieto")
             self.frame_actual = 0
         #como nuestro png no tiene una animacion para ir a la izquierda lo que hago es que la atributo scale que es de arcade lo volteo 
         #de forma de espejo para hacer que se cea como el personaje se mueva a la izquierda
@@ -175,4 +176,21 @@ class Slime(Entities):
 
         self.texture = self.animaciones["quieto"][0]
         
-        self.hit_box = HitBox([(-15, -15), (15, -15), (15, 10), (-15, 10)])
+class Esqueleto(Entities):
+    def __init__(self):
+        super().__init__(escala=1, hp=9, speed=5, jump=0, force=16, defense=7, width=64, height=96)
+
+        ruta2 = "assets/Skeletons_Free_Pack/Skeleton_Sword/Skeleton_White/Skeleton_With_VFX/"
+
+        self.animaciones = {
+            "caminar": self.cargar_hoja(f"{ruta2}Skeleton_01_White_Walk.png", 10),
+            "quieto": self.cargar_hoja(f"{ruta2}Skeleton_01_White_Idle.png", 8),
+            "ataque": self.cargar_hoja(f"{ruta2}Skeleton_01_White_Attack1.png", 10),
+            "daño": self.cargar_hoja(f"{ruta2}Skeleton_01_White_Hurt.png", 5),
+            "morir": self.cargar_hoja(f"{ruta2}Skeleton_01_White_Die.png", 13)
+        }
+
+        self.hit_box = HitBox([(-15, -45), (15, -45), (15, 45), (-15, 45)])
+
+        self.texture = self.animaciones["quieto"][0]
+
