@@ -201,4 +201,23 @@ class Esqueleto(Entities):
         self.hit_box = HitBox([(-15, -45), (15, -45), (15, 45), (-15, 45)])
 
         self.texture = self.animaciones["quieto"][0]
+        
+        #clase del jefe final
+class Boss(Entities):
+    def __init__(self):
+        super().__init__(escala=1, hp=25, speed=4, jump=0, force=18, defense=9, width=128, height=128)
 
+        ruta_boss = "assets/JEFE_FINAL"
+
+        self.animaciones = {
+            "caminar": self.cargar_hoja(f"{ruta_boss}Run.png", 8),
+            "quieto": self.cargar_hoja(f"{ruta_boss}Idle.png", 8),
+            "ataque": self.cargar_hoja(f"{ruta_boss}Attack01.png", 8),
+            "daño": self.cargar_hoja(f"{ruta_boss}Take_hit.png", 3),
+            "morir": self.cargar_hoja(f"{ruta_boss}Death.png", 7),
+            "salto": self.cargar_hoja(f"{ruta_boss}Jump.png", 2),
+        }
+
+        self.hit_box = HitBox([(-30, -60), (30, -60), (30, 45), (-30, 45)])
+
+        self.texture = self.animaciones["quieto"][0]
