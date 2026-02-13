@@ -15,6 +15,13 @@ class Juego(arcade.Window):
         self.camara = arcade.Camera2D()
         self.tile_map =  None
         self.scene = None
+
+        self.ronda_actual = 1
+        self.max_rondas = 3
+        self.spawn_completado = False
+
+        self.nivel_1_complete = False
+
         self.lista_enemigos = arcade.SpriteList()
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
@@ -86,8 +93,7 @@ class Juego(arcade.Window):
         if self.scene:
             self.camara.use()
             self.scene.draw()
-            self.caballero.draw_hit_box()
-            self.esqueleto.draw_hit_box()
+            
 
     def on_update(self, delta_time):
         
@@ -113,11 +119,26 @@ class Juego(arcade.Window):
         # 3. Aplicar la posición
         self.camara.position = (final_x, final_y)
 
+        for enemigo in self.lista_enemigos:
+            if enemigo.invulnerable:
+                enemigo.tiempo_invulnerabilidad += delta_time
+                if enemigo.tiempo_invulnerabilidad > 1.0: 
+                    enemigo.invulnerable = False
+                    enemigo.tiempo_invulnerabilidad = 0
+
         #verificamos las coliciones para realizar el daño
         if self.caballero.estado_actual == "ataque" or self.caballero.estado_actual == "ataque_movimiento" and self.caballero.frame_actual == 2:
-            if not self.caballero.hizo_dano:
-                self.caballero.verificar_impacto(self.lista_enemigos)
-                self.caballero.hizo_dano = True
+            self.caballero.verificar_impacto(self.lista_enemigos)
+
+        # Verificamos si la lista está vacía para pasar de ronda o de nivel
+        if len(self.lista_enemigos) == 0:
+            if self.ronda_actual < 3:
+                self.ronda_actual += 1
+                self.spawn_ronda()
+                print(f"Iniciando Ronda {self.ronda_actual}")
+            else:
+                self.nivel_1_complete = True 
+                
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.A or key == arcade.key.LEFT:
@@ -134,6 +155,21 @@ class Juego(arcade.Window):
     def on_key_release(self, key, modifiers):
         if key in (arcade.key.A, arcade.key.LEFT, arcade.key.D, arcade.key.RIGHT):
             self.caballero.change_x = 0
+
+    def spawn_ronda(self):
+        for i in range(3):
+            self.esqueleto = Esqueleto()
+            # Los ponemos en puntos específicos del mapa_nivel_2
+            self.esqueleto.center_x = 300 + (i * 150)
+            self.esqueleto.center_y = 500
+        
+            # Sincronizamos con tu lógica de invulnerabilidad corregida
+            self.esqueleto.invulnerable = False
+            self.esqueleto.tiempo_invulnerabilidad = 0
+        
+            self.lista_enemigos.append(self.esqueleto)
+
+            
         
 def main():
     window = Juego()

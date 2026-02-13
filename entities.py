@@ -17,6 +17,9 @@ class Entities(arcade.Sprite):
         self.atacar = False
         self.hizo_dano = False
 
+        self.invulnerable = False
+        self.tiempo_invulnerabilidad = 0
+
         #definimos el alto y el ancho de nuestra entidad
         self.ancho = width
         self.alto = height
@@ -38,40 +41,49 @@ class Entities(arcade.Sprite):
             self.tipo_ataque = "ataque_movimiento"
             self.frame_actual = 0
 
-    def verificar_impacto(self, lista_enemigos):
-        if not self.hizo_dano:
-            reach = self.width * 0.75
+    def verificar_impacto(self, lista_enemigos, delta_time = 1 / 60):
+        
+        reach = self.width * 0.75
 
-            ataque = arcade.SpriteCircle(1, arcade.color.BLACK)
-            ataque.center_x = self.center_x + (reach / 2)
-            ataque.center_y = self.center_y
+        ataque = arcade.SpriteCircle(1, arcade.color.BLACK)
+        ataque.center_x = self.center_x + (reach / 2)
+        ataque.center_y = self.center_y
 
-            ataque.width = abs(reach)
-            ataque.height = self.height
+        ataque.width = abs(reach)
+        ataque.height = self.height
 
-            golpe = arcade.check_for_collision_with_list(ataque, lista_enemigos) #nota falta agregar una lista de sprites para esta funcion que lo hare cuando los tenga
+        golpe = arcade.check_for_collision_with_list(ataque, lista_enemigos) #nota falta agregar una lista de sprites para esta funcion que lo hare cuando los tenga
 
-            if golpe:
-                for enemigo in golpe:
-                    print("colision detectada")
-                    daño = self.force - enemigo.defense
+        
+        for enemigo in golpe:
+            if not enemigo.invulnerable:
+                print("colision detectada")
+                daño = self.force - enemigo.defense
 
-                    if daño < 0:
-                        daño = 0
-                    
-                    enemigo.hp -= daño
-                    print(f"vida restante {enemigo.hp}")
+                if daño < 0:
+                    daño = 0
+                        
+                enemigo.hp -= daño
+                print(f"daño {daño}")
+                print(f"vida restante {enemigo.hp}")
 
-                    self.hizo_dano = True
+                enemigo.invulnerable = True
+                enemigo.tiempo_invulnerabilidad = 0
 
-                    if enemigo.hp == 0:
-                        enemigo.morir()
+                if enemigo.invulnerable:
+                    enemigo.tiempo_invulnerabilidad += delta_time
+                    if enemigo.tiempo_invulnerabilidad > 1.0:
+                        enemigo.invulnerable = False
+                        enemigo.tiempo_invulnerabilidad = 0
+
+                if enemigo.hp == 0:
+                    enemigo.morir()
             
 
     def morir(self):
-        if self.hp <= 0 and self.estado != "morir":
+        if self.hp <= 0 and self.estado_actual != "morir":
             self.hp = 0
-            self.estado = "morir"
+            self.estado_actual = "morir"
             self.frame_actual = 0
             self.kill()
 
@@ -110,6 +122,8 @@ class Entities(arcade.Sprite):
             self.estado = "caminar"
         elif self.change_x == 0:
             self.estado = "quieto"
+
+        
         
         #aqui lo que hace es cambiar la varianle del constructor por que la viarible que definimos para hacer el cambio de los estados de movimiento
         if self.estado_actual != self.estado:
@@ -123,7 +137,6 @@ class Entities(arcade.Sprite):
             if self.tiempo_animacion > 4.0:
                 self.tiempo_animacion = 0
                 self.frame_actual += 1
-                self.hizo_dano = False
 
         if self.tiempo_animacion > 0.1:
             self.tiempo_animacion = 0
