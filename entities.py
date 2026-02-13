@@ -15,6 +15,7 @@ class Entities(arcade.Sprite):
         self.defense = defense
         self.is_climbing = False
         self.atacar = False
+        self.hizo_dano = False
 
         #definimos el alto y el ancho de nuestra entidad
         self.ancho = width
@@ -37,28 +38,33 @@ class Entities(arcade.Sprite):
             self.tipo_ataque = "ataque_movimiento"
             self.frame_actual = 0
 
-    def verificar_impacto(self):
-        reach = 50 * self.scale
+    def verificar_impacto(self, lista_enemigos):
+        reach = self.width * 0.75
 
-        ataque = arcade.SpriteCircle(1, arcade.color.TRANSPARENT_BLACK)
+        ataque = arcade.SpriteCircle(1, arcade.color.BLACK)
         ataque.center_x = self.center_x + (reach / 2)
         ataque.center_y = self.center_y
 
         ataque.width = abs(reach)
         ataque.height = self.height
 
-        golpe = arcade.check_for_collision_with_list(ataque,) #nota falta agregar una lista de sprites para esta funcion que lo hare cuando los tenga
+        golpe = arcade.check_for_collision_with_list(ataque, lista_enemigos) #nota falta agregar una lista de sprites para esta funcion que lo hare cuando los tenga
 
-        for enemigo in golpe:
-            daño = self.force - self.enemigo.defense
+        if golpe and not self.hizo_dano:
+            for enemigo in golpe:
+                print("colision detectada")
+                daño = self.force - enemigo.defense
 
-            if daño < 0:
-                daño = 0
-            
-            enemigo.hp -= daño
+                if daño < 0:
+                    daño = 0
+                
+                enemigo.hp -= daño
+                print(f"vida restante {enemigo.hp}")
 
-            if enemigo.hp <= 0:
-                enemigo.morir()
+                self.hizo_dano = True
+
+                if enemigo.hp == 0:
+                    enemigo.morir()
             
 
     def morir(self):
@@ -66,6 +72,7 @@ class Entities(arcade.Sprite):
             self.hp = 0
             self.estado = "morir"
             self.frame_actual = 0
+            self.kill()
 
 
     #hacemos un metodo para carga las animaciones que dispone nuestro png
@@ -115,6 +122,7 @@ class Entities(arcade.Sprite):
             if self.tiempo_animacion > 4.0:
                 self.tiempo_animacion = 0
                 self.frame_actual += 1
+                self.hizo_dano = False
 
         if self.tiempo_animacion > 0.1:
             self.tiempo_animacion = 0

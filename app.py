@@ -1,6 +1,6 @@
 #importamos la libreria de arcade
 import arcade
-from entities import Jugador
+from entities import Jugador, Esqueleto
 
 #definimos el ancho y alto de la ventana donde se mostrara el juego
 WIDTH = 1600
@@ -15,6 +15,7 @@ class Juego(arcade.Window):
         self.camara = arcade.Camera2D()
         self.tile_map =  None
         self.scene = None
+        self.lista_enemigos = arcade.SpriteList()
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
     
@@ -54,17 +55,28 @@ class Juego(arcade.Window):
         self.caballero.center_x = 80
         self.caballero.center_y = 300
 
+        #definimos a un enemigo
+        self.esqueleto = Esqueleto()
+
+        self.esqueleto.center_x = 400
+        self.esqueleto.center_y = 600
+
         #aja aqui lo que hacemos es que como ya nuestro juegador es un objeto lo colocamos en la esena que ya habiamos predefinido para el mapa
         self.scene.add_sprite("jugador", self.caballero)
+        self.scene.add_sprite("esqueleto", self.esqueleto)
 
         #definimos la gravedad
         gravedad = 0.5
 
         #ahora creamos una variable para que contega el motor de fisicas de arcade
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.caballero, platforms=self.scene["piso"], gravity_constant=gravedad)
+        self.physics_engine_esqueleto = arcade.PhysicsEnginePlatformer(self.esqueleto, platforms=self.scene["piso"], gravity_constant=gravedad)
 
         #aqui mediante la variable que definimos en el construtor podemos hacer zoom para que no se muestre todo el mapa
         self.camara.zoom = 2.0
+
+        #lo añadimos a nuestra lista de coliciones
+        self.lista_enemigos.append(self.esqueleto)
 
     def on_draw(self):
         #para limpiar pantalla
@@ -74,12 +86,15 @@ class Juego(arcade.Window):
         if self.scene:
             self.camara.use()
             self.scene.draw()
+            self.caballero.draw_hit_box()
+            self.esqueleto.draw_hit_box()
 
     def on_update(self, delta_time):
         
         self.caballero.update_animation(delta_time)
 
         self.physics_engine.update()
+        self.physics_engine_esqueleto.update()
         
         # 1. Definir hacia dónde queremos que vaya la cámara (el jugador)
         target_x = self.caballero.center_x
@@ -97,6 +112,12 @@ class Juego(arcade.Window):
 
         # 3. Aplicar la posición
         self.camara.position = (final_x, final_y)
+
+        #verificamos las coliciones para realizar el daño
+        if self.caballero.estado_actual == "ataque" or self.caballero.estado_actual == "ataque_movimiento" and self.caballero.frame_actual == 2:
+            if not self.caballero.hizo_dano:
+                self.caballero.verificar_impacto(self.lista_enemigos)
+                self.caballero.hizo_dano = True
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.A or key == arcade.key.LEFT:
