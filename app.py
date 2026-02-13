@@ -6,7 +6,7 @@ from entities import Jugador, Esqueleto
 #definimos el ancho y alto de la ventana donde se mostrara el juego
 WIDTH = 1600
 HEIGHT = 1280
-TITULO = "soulslike"
+TITULO = "The Hero Knight"
 
 #esta va hacer la clase donde ejecutaros todo nuestro codigo
 #arcade.window es una clase predefinida por arcade de donde nosotros podemos hacer el juego 
@@ -66,12 +66,12 @@ class Juego(arcade.Window):
         #definimos a un enemigo
         self.esqueleto = Esqueleto()
 
-        self.esqueleto.center_x = 400
+        self.esqueleto.center_x = 800
         self.esqueleto.center_y = 600
 
         #aja aqui lo que hacemos es que como ya nuestro juegador es un objeto lo colocamos en la esena que ya habiamos predefinido para el mapa
         self.scene.add_sprite("jugador", self.caballero)
-        self.scene.add_sprite("esqueleto", self.esqueleto)
+        
 
         #definimos la gravedad
         gravedad = 0.5
@@ -94,6 +94,7 @@ class Juego(arcade.Window):
         if self.scene:
             self.camara.use()
             self.scene.draw()
+            self.lista_enemigos.draw()
             
 
     def on_update(self, delta_time):
@@ -120,6 +121,9 @@ class Juego(arcade.Window):
         # 3. Aplicar la posición
         self.camara.position = (final_x, final_y)
 
+        for self.esqueleto in self.lista_enemigos:
+            self.esqueleto.pensar(self.caballero)
+
         for enemigo in self.lista_enemigos:
             if enemigo.invulnerable:
                 enemigo.tiempo_invulnerabilidad += delta_time
@@ -139,6 +143,18 @@ class Juego(arcade.Window):
                 print(f"Iniciando Ronda {self.ronda_actual}")
             else:
                 self.nivel_1_complete = True 
+
+
+        if self.caballero.bottom < 0:
+            print("¡Caíste al vacío!")
+            self.caballero.hp = 0
+            self.caballero.morir() # Llama a tu función de muerte
+
+            # 2. Chequeo para los enemigos (dentro de tu bucle for)
+        for self.esqueleto in self.lista_enemigos:
+            if self.esqueleto.bottom < 0:
+                self.esqueleto.hp = 0
+                self.esqueleto.morir()
                 
 
     def on_key_press(self, key, modifiers):
@@ -158,17 +174,20 @@ class Juego(arcade.Window):
             self.caballero.change_x = 0
 
     def spawn_ronda(self):
-        for i in range(3):
-            self.esqueleto = Esqueleto()
-            # Los ponemos en puntos específicos del mapa_nivel_2
-            self.esqueleto.center_x = 300 + (i * 150)
-            self.esqueleto.center_y = 500
         
-            # Sincronizamos con tu lógica de invulnerabilidad corregida
-            self.esqueleto.invulnerable = False
-            self.esqueleto.tiempo_invulnerabilidad = 0
+        self.esqueleto = Esqueleto()
+        # Los ponemos en puntos específicos del mapa_nivel_2
+        self.esqueleto.center_x = 1000
+        self.esqueleto.center_y = 500
         
-            self.lista_enemigos.append(self.esqueleto)
+        # Sincronizamos con tu lógica de invulnerabilidad corregida
+        self.esqueleto.invulnerable = False
+        self.esqueleto.tiempo_invulnerabilidad = 0
+        
+        self.lista_enemigos.append(self.esqueleto)
+
+        
+        self.physics_engine_esqueleto = arcade.PhysicsEnginePlatformer(self.esqueleto, platforms=self.scene["piso"], gravity_constant=0.5)
 
             
         

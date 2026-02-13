@@ -200,7 +200,7 @@ class Slime(Entities):
         
 class Esqueleto(Entities):
     def __init__(self):
-        super().__init__(escala=1, hp=9, speed=5, jump=0, force=16, defense=7, width=64, height=96)
+        super().__init__(escala=1, hp=9, speed=2, jump=0, force=16, defense=7, width=64, height=96)
 
         ruta2 = "assets/Skeletons_Free_Pack/Skeleton_Sword/Skeleton_White/Skeleton_With_VFX/"
 
@@ -215,6 +215,45 @@ class Esqueleto(Entities):
         self.hit_box = HitBox([(-15, -45), (15, -45), (15, 45), (-15, 45)])
 
         self.texture = self.animaciones["quieto"][0]
+
+    # En entities.py, dentro de la clase Esqueleto
+    def update_animation(self, delta_time: float = 1 / 60):
+        # 1. Primero llamamos al padre para que actualice el 'estado' (quieto, caminar, etc.)
+        super().update_animation(delta_time)
+
+        # 2. Ahora usamos la lógica específica del esqueleto para cambiar la textura
+        self.tiempo_animacion += delta_time
+        
+        if self.tiempo_animacion > 0.1: # Velocidad de la animación
+            self.tiempo_animacion = 0
+            self.frame_actual += 1
+            
+            # Obtenemos las texturas según el estado que decidió el padre
+            animacion = self.animaciones.get(self.estado)
+            
+            if animacion:
+                if self.frame_actual >= len(animacion):
+                    self.frame_actual = 0
+                
+                # Cambiamos la imagen que se ve en pantalla
+                self.texture = animacion[self.frame_actual]
+
+    def pensar(self, caballero):
+        if self.estado_actual == "morir":
+            self.change_x = 0
+            return
+        
+        distancia_x = caballero.center_x - self.center_x
+
+        # Si estás cerca pero no demasiado (para que no se encimen)
+        if 50 < abs(distancia_x):
+            if 50 < abs(distancia_x) < 400:
+                if distancia_x > 0:
+                    self.change_x = self.speed  
+                else:
+                    self.change_x = -self.speed
+            else:
+                self.change_x = 0 # Se queda quieto si estás muy lejos o muy cerca
         
         #clase del jefe final
 class Boss(Entities):
@@ -250,10 +289,6 @@ class Boss(Entities):
             "empty": self.cargar_hoja(f"{ruta}empty.png", 1)
         }
         self.texture = self.animaciones["llena"][0]
-
-    def aplicar_efecto(self, jugador):
-        jugador.defense += self.valor_bonus
-        return True
 
 class YellowPotions(Entities):
     def init(self):
