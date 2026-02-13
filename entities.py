@@ -39,32 +39,33 @@ class Entities(arcade.Sprite):
             self.frame_actual = 0
 
     def verificar_impacto(self, lista_enemigos):
-        reach = self.width * 0.75
+        if not self.hizo_dano:
+            reach = self.width * 0.75
 
-        ataque = arcade.SpriteCircle(1, arcade.color.BLACK)
-        ataque.center_x = self.center_x + (reach / 2)
-        ataque.center_y = self.center_y
+            ataque = arcade.SpriteCircle(1, arcade.color.BLACK)
+            ataque.center_x = self.center_x + (reach / 2)
+            ataque.center_y = self.center_y
 
-        ataque.width = abs(reach)
-        ataque.height = self.height
+            ataque.width = abs(reach)
+            ataque.height = self.height
 
-        golpe = arcade.check_for_collision_with_list(ataque, lista_enemigos) #nota falta agregar una lista de sprites para esta funcion que lo hare cuando los tenga
+            golpe = arcade.check_for_collision_with_list(ataque, lista_enemigos) #nota falta agregar una lista de sprites para esta funcion que lo hare cuando los tenga
 
-        if golpe and not self.hizo_dano:
-            for enemigo in golpe:
-                print("colision detectada")
-                daño = self.force - enemigo.defense
+            if golpe:
+                for enemigo in golpe:
+                    print("colision detectada")
+                    daño = self.force - enemigo.defense
 
-                if daño < 0:
-                    daño = 0
-                
-                enemigo.hp -= daño
-                print(f"vida restante {enemigo.hp}")
+                    if daño < 0:
+                        daño = 0
+                    
+                    enemigo.hp -= daño
+                    print(f"vida restante {enemigo.hp}")
 
-                self.hizo_dano = True
+                    self.hizo_dano = True
 
-                if enemigo.hp == 0:
-                    enemigo.morir()
+                    if enemigo.hp == 0:
+                        enemigo.morir()
             
 
     def morir(self):
