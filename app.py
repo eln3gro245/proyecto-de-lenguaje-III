@@ -1,5 +1,6 @@
 #importamos la libreria de arcade
 import arcade
+from conexion import inicializar_base_de_datos, obtener_datos_jugador
 from entities import Jugador, Esqueleto
 
 #definimos el ancho y alto de la ventana donde se mostrara el juego
@@ -176,6 +177,24 @@ def main():
     window.setup()
     arcade.run()
 
+
+    
+    def main():
+    # 1. Inicializamos la base de datos (crea tablas y datos del jugador)
+     from conexion import inicializar_base_de_datos, obtener_datos_jugador
+    print("--- Verificando Base de Datos ---")
+    inicializar_base_de_datos()
+    
+    # 2. Verificación rápida: ¿La base de datos tiene la defensa (atributo nuevo)?
+    datos = obtener_datos_jugador()
+    if datos:
+        # Según tu entities.py, la defensa debería ser 15.0
+        print(f"✔ Datos cargados de DB. Defensa detectada: {datos[5]}")
+    
+    # 3. Lanzamos el juego
+    window = Juego()
+    window.setup()
+    arcade.run()
 
 if __name__ == "__main__":
     main()

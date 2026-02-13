@@ -235,3 +235,39 @@ class Boss(Entities):
         self.hit_box = HitBox([(-30, -60), (30, -60), (30, 45), (-30, 45)])
 
         self.texture = self.animaciones["quieto"][0]
+        
+        
+        
+        class GreenPotions(Entities):
+         def init(self):
+          super().init(escala=1, hp=1, speed=0, jump=0, force=0, defense=0, width=32, height=32)
+        ruta = "assets/Green potions/Green potions/"
+        self.valor_bonus = 7
+        self.animaciones = {
+            "llena": self.cargar_hoja(f"{ruta}poção verde.png", 1),
+            "media": self.cargar_hoja(f"{ruta}poção verde meio vazia.png", 1),
+            "vacia": self.cargar_hoja(f"{ruta}poção verde bem vazia.png", 1),
+            "empty": self.cargar_hoja(f"{ruta}empty.png", 1)
+        }
+        self.texture = self.animaciones["llena"][0]
+
+    def aplicar_efecto(self, jugador):
+        jugador.defense += self.valor_bonus
+        return True
+
+class YellowPotions(Entities):
+    def init(self):
+        super().init(escala=1, hp=1, speed=0, jump=0, force=0, defense=0, width=32, height=32)
+        ruta = "assets/Yellow Potions/Yellow Potions/"
+        self.valor_bonus = 6
+        self.animaciones = {
+            "llena": self.cargar_hoja(f"{ruta}poção amarela.png", 1),
+            "media": self.cargar_hoja(f"{ruta}poção amarela meio vazia.png", 1),
+            "vacia": self.cargar_hoja(f"{ruta}poção amarela bem vazia.png", 1),
+            "empty": self.cargar_hoja(f"{ruta}empty.png", 1)
+        }
+        self.texture = self.animaciones["llena"][0]
+
+    def aplicar_efecto(self, jugador):
+        jugador.hp += self.valor_bonus
+        return True
