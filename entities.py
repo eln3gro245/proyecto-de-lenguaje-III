@@ -53,7 +53,6 @@ class Entities(arcade.Sprite):
         ataque.height = self.height
 
         golpe = arcade.check_for_collision_with_list(ataque, lista_enemigos) #nota falta agregar una lista de sprites para esta funcion que lo hare cuando los tenga
-
         
         for enemigo in golpe:
             if not enemigo.invulnerable:
@@ -103,10 +102,13 @@ class Entities(arcade.Sprite):
         animacion = self.animaciones.get(self.estado_actual)
 
         if not animacion:
-            animacion = self.animaciones.get("quieto")
+            animacion = self.animaciones.get(self.estado_actual)
+            self.estado_actual = self.estado
+            
             self.frame_actual = 0
-        #como nuestro png no tiene una animacion para ir a la izquierda lo que hago es que la atributo scale que es de arcade lo volteo 
-        #de forma de espejo para hacer que se cea como el personaje se mueva a la izquierda
+        
+        #como nuestro png no tiene una animacion para ir a la izquierda lo que hago es que la atributo width que es el ancho 
+        #y al ser negativo cambia la vista para que mire a la izquierda
         if self.change_x > 0:
             self.width = abs(self.width)
         elif self.change_x < 0:
@@ -121,9 +123,7 @@ class Entities(arcade.Sprite):
         elif self.change_x != 0:
             self.estado = "caminar"
         elif self.change_x == 0:
-            self.estado = "quieto"
-
-        
+            self.estado = "quieto" 
         
         #aqui lo que hace es cambiar la varianle del constructor por que la viarible que definimos para hacer el cambio de los estados de movimiento
         if self.estado_actual != self.estado:
@@ -216,46 +216,36 @@ class Esqueleto(Entities):
 
         self.texture = self.animaciones["quieto"][0]
 
-    # En entities.py, dentro de la clase Esqueleto
-    def update_animation(self, delta_time: float = 1 / 60):
-        # 1. Primero llamamos al padre para que actualice el 'estado' (quieto, caminar, etc.)
-        super().update_animation(delta_time)
-
-        # 2. Ahora usamos la lógica específica del esqueleto para cambiar la textura
-        self.tiempo_animacion += delta_time
-        
-        if self.tiempo_animacion > 0.1: # Velocidad de la animación
-            self.tiempo_animacion = 0
-            self.frame_actual += 1
-            
-            # Obtenemos las texturas según el estado que decidió el padre
-            animacion = self.animaciones.get(self.estado)
-            
-            if animacion:
-                if self.frame_actual >= len(animacion):
-                    self.frame_actual = 0
-                
-                # Cambiamos la imagen que se ve en pantalla
-                self.texture = animacion[self.frame_actual]
 
     def pensar(self, caballero):
         if self.estado_actual == "morir":
             self.change_x = 0
             return
         
+        # Usamos center_x (corregido) para calcular la distancia
         distancia_x = caballero.center_x - self.center_x
+        abs_distancia = abs(distancia_x)
 
-        # Si estás cerca pero no demasiado (para que no se encimen)
-        if 50 < abs(distancia_x):
-            if 50 < abs(distancia_x) < 400:
-                if distancia_x > 0:
-                    self.change_x = self.speed  
-                else:
-                    self.change_x = -self.speed
+        # 1. Rango de Persecución: Si está entre 60 y 400 píxeles
+        if 60 < abs_distancia < 400:
+            if distancia_x > 0:
+                self.change_x = self.speed
+                self.estado_actual = "caminar"
             else:
-                self.change_x = 0 # Se queda quieto si estás muy lejos o muy cerca
+                self.change_x = -self.speed
+                self.estado_actual = "caminar"
+                
+        # 2. Rango de Ataque/Detención: Si está a menos de 60 píxeles
+        elif abs_distancia <= 60:
+            self.change_x = 0 
+            self.estado_actual = "ataque"
+            
+        # 3. Fuera de vista: Si está a más de 400 píxeles
+        else:
+            self.change_x = 0 # Se queda quieto porque no te ve
+            self.estado_actual = "quieto"
         
-        #clase del jefe final
+#clase del jefe final
 class Boss(Entities):
     def __init__(self):
         super().__init__(escala=1, hp=25, speed=4, jump=0, force=18, defense=9, width=128, height=128)

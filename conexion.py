@@ -15,7 +15,7 @@ def conectar():
         conexion.execute("PRAGMA foreign_keys = ON")
         return conexion
     except Exception as e:
-        print(f"❌ Error de conexión: {e}")
+        print(f"Error de conexión: {e}")
         return None
 
 def inicializar_base_de_datos():
@@ -81,7 +81,7 @@ def inicializar_base_de_datos():
 
     conexion.commit()
     conexion.close()
-    print("✅ Base de datos sincronizada con Entities.")
+    print("Base de datos sincronizada con Entities.")
 
 def obtener_datos_jugador():
     """Recupera los stats para la clase Jugador."""
@@ -94,7 +94,7 @@ def obtener_datos_jugador():
         cursor.execute("SELECT escala, hp, speed, jump, force, defense FROM datos_jugador WHERE id = 1")
         return cursor.fetchone()
     except Exception as e:
-        print(f"❌ Error al obtener datos: {e}")
+        print(f"Error al obtener datos: {e}")
         return None
     finally:
         conexion.close()
@@ -123,7 +123,7 @@ def usar_item_en_db(nombre_item):
         conexion.commit()
         return True
     except Exception as e:
-        print(f"❌ Error al usar ítem: {e}")
+        print(f"Error al usar ítem: {e}")
         return False
     finally:
         conexion.close()
@@ -143,6 +143,6 @@ def guardar_stats_jugador(jugador):
         ''', (jugador.hp, jugador.speed, jugador.jump, jugador.force, jugador.defense))
         conexion.commit()
     except Exception as e:
-        print(f"❌ Error al guardar stats: {e}")
+        print(f"Error al guardar stats: {e}")
     finally:
         conexion.close()

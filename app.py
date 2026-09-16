@@ -1,5 +1,6 @@
 #importamos la libreria de arcade
 import arcade
+import os
 from conexion import inicializar_base_de_datos, obtener_datos_jugador
 from entities import Jugador, Esqueleto
 
@@ -27,9 +28,7 @@ class Juego(arcade.Window):
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
     
-    def setup(self):
-        import os  
-        
+    def setup(self):        
         map_path = "assets/n3/mapa_nivel_2.tmx"
         self.tile_map = arcade.load_tilemap(map_path, scaling=1)
 
@@ -121,9 +120,11 @@ class Juego(arcade.Window):
         # 3. Aplicar la posición
         self.camara.position = (final_x, final_y)
 
-        for self.esqueleto in self.lista_enemigos:
+        self.esqueleto.update_animation(delta_time)
+        for esqueleto in self.lista_enemigos:
             self.esqueleto.pensar(self.caballero)
-
+            self.esqueleto.update_animation(delta_time)
+            
         for enemigo in self.lista_enemigos:
             if enemigo.invulnerable:
                 enemigo.tiempo_invulnerabilidad += delta_time
@@ -135,6 +136,9 @@ class Juego(arcade.Window):
         if self.caballero.estado_actual == "ataque" or self.caballero.estado_actual == "ataque_movimiento" and self.caballero.frame_actual == 2:
             self.caballero.verificar_impacto(self.lista_enemigos)
 
+        if self.esqueleto.estado_actual == "ataque" and self.esqueleto.frame_actual == 5:
+            self.esqueleto.verificar_impacto(self.lista_enemigos)
+
         # Verificamos si la lista está vacía para pasar de ronda o de nivel
         if len(self.lista_enemigos) == 0:
             if self.ronda_actual < 3:
@@ -143,7 +147,6 @@ class Juego(arcade.Window):
                 print(f"Iniciando Ronda {self.ronda_actual}")
             else:
                 self.nivel_1_complete = True 
-
 
         if self.caballero.bottom < 0:
             print("¡Caíste al vacío!")
@@ -192,15 +195,8 @@ class Juego(arcade.Window):
             
         
 def main():
-    window = Juego()
-    window.setup()
-    arcade.run()
-
-
-    
-    def main():
     # 1. Inicializamos la base de datos (crea tablas y datos del jugador)
-     from conexion import inicializar_base_de_datos, obtener_datos_jugador
+    
     print("--- Verificando Base de Datos ---")
     inicializar_base_de_datos()
     
