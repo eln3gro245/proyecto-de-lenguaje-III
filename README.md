@@ -22,6 +22,9 @@ Actualmente existen los siguientes problemas:
 
 - Ea camara no sigue al protagonista, si el caballero se cae la camara no lo sigue se queda fija en el punto exacto donde salto el caballero
 - El tema sonoro se reprofuce en segundo plano sin parar, por ejemplo empieza: normal, termina, empieza otra vez y luego se escucha en segundo plano.
+- Las animaciones que no sean las del protagonista no funcionan 
+- Ademas que no se cuenta con ventanas de ningun tipo ni de muerte, inicio
+
 
 ### Cómo jugar
 
